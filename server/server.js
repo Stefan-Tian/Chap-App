@@ -20,13 +20,14 @@ io.on("connection", (socket) => {
 
   socket.broadcast.emit("newMessage", generateMessage("Admin", "A user just joined in"));
 
-  socket.on("createMessage", (message) => {
+  socket.on("createMessage", (message, callback) => {
     io.emit("newMessage", generateMessage(message.from, message.text));
+    callback("this is it");
     // socket.broadcast.emit("newMessage", {
     //   from: message.from,
     //   text: message.text,
     //   sentAt: new Date().getTime()
-    // });
+    // });s
   });
 
   socket.on("disconnect", () => {

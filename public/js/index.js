@@ -2,12 +2,27 @@ const socket = io();
 
 socket.on("connect", function () {
   console.log("Connected to server");
+});
 
-  socket.on("newMessage", function (message) {
-    console.log("newMessage", message);
-  });
+socket.on("newMessage", function (message) {
+  console.log("newMessage", message);
+  const li = $("<li></li>");
+  li.text(`${message.from}: ${message.text}`);
 
-  socket.on("disconnect", function () {
-    console.log("Disconnected to server");
+  $("#messages").append(li);
+});
+
+socket.on("disconnect", function () {
+  console.log("Disconnected to server");
+});
+
+$("#messageForm").on("submit", function (event) {
+  event.preventDefault();
+
+  socket.emit("createMessage", {
+    from: "User",
+    text: $("[name=message]").val()
+  }, function () {
+
   });
 });
