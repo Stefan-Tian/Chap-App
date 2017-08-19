@@ -17,7 +17,30 @@ function scrollToBottom () {
 }
 
 socket.on("connect", function () {
-  console.log("Connected to server");
+  const params = jQuery.deparam(window.location.search);
+
+  socket.emit("join", params, function (err) {
+    if (err) {
+      alert(err);
+      window.location.href = "/";
+    } else {
+      console.log("No error");
+    }
+  });
+});
+
+socket.on("disconnect", function () {
+  console.log("Disconnected to server");
+});
+
+socket.on("updateUserList", function (users) {
+  const ol = $("<ol></ol>");
+
+  users.forEach(function (user) {
+    ol.append($("<li></li>").text(user));
+  });
+
+  $("#users").html(ol);
 });
 
 socket.on("newMessage", function (message) {
@@ -31,10 +54,6 @@ socket.on("newMessage", function (message) {
 
   $("#messages").append(html);
   scrollToBottom();
-});
-
-socket.on("disconnect", function () {
-  console.log("Disconnected to server");
 });
 
 $("#messageForm").on("submit", function (event) {
